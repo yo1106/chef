@@ -2,8 +2,14 @@
 # Install Settings
 ###
 
+# Remote
+default['php']['remote_base_url'] = "http://jp1.php.net/get/php-5.5.6.tar.gz/from/this/mirror"
+
 # Version
-default['php']['version'] = "php-5.3.27"
+default['php']['version'] = "php-5.5.6"
+
+# Remote
+default['php']['remote_url'] = "http://jp1.php.net/get/#{php['version']}.tar.gz/from/this/mirror"
 
 # Directory
 default['php']['src_dir']    = "/usr/local/src/"

@@ -6,9 +6,10 @@
 #
 # All rights reserved - Do Not Redistribute
 #
-cookbook_file "#{node['php']['src_dir']}#{node['php']['version']}.tar.gz" do
-  mode 0644
+remote_file "#{node['php']['src_dir']}/#{node['php']['version']}.tar.gz" do
+  source "#{node['php']['remote_url']}"
 end
+
 
 %W{libxml2-devel curl-devel}.each do |pkg|
   package pkg do
@@ -21,7 +22,6 @@ configure = node['php']['configure'].join(" ")
 bash "install php" do
   user     node['php']['install_user']
   cwd      node['php']['src_dir']
-  not_if   "which php"
   code   <<-EOH
     tar xzf #{node['php']['version']}.tar.gz
     cd #{node['php']['version']}
