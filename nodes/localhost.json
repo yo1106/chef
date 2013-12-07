@@ -1,6 +1,6 @@
 {
     "run_list": [
-        "recipe[php]",
-        "recipe[apache]"
+	"recipe[chef-cmake]",
+	"recipe[mysql]"
     ]
 }
