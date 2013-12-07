@@ -6,8 +6,13 @@
 #
 # All rights reserved - Do Not Redistribute
 #
-cookbook_file "#{node['apache']['src_dir']}#{node['apache']['version']}.tar.gz" do
-  mode 0644
+
+#cookbook_file "#{node['apache']['src_dir']}#{node['apache']['version']}.tar.gz" do
+#  mode 0644
+#end
+
+remote_file "#{node['apache']['src_dir']}/#{node['apache']['version']}.tar.gz" do
+  source "#{node['apache']['remote_base_url']}#{node['apache']['version']}.tar.gz"
 end
 
 bash "install apache" do

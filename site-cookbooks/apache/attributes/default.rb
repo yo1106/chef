@@ -2,8 +2,11 @@
 # Install Settings
 ###
 
+# Remote
+default['apache']['remote_base_url'] = "http://ftp.jaist.ac.jp/pub/apache/httpd/"
+
 # Version
-default['apache']['version'] = "httpd-2.2.24"
+default['apache']['version'] = "httpd-2.4.7"
 
 # Directory
 default['apache']['dir']     = "/usr/local/apache2/"
