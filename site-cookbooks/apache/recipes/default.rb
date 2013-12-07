@@ -7,18 +7,71 @@
 # All rights reserved - Do Not Redistribute
 #
 
-#cookbook_file "#{node['apache']['src_dir']}#{node['apache']['version']}.tar.gz" do
-#  mode 0644
-#end
+#Apacheインストールに必要なAPRのインストール
+remote_file "#{node['apache']['src_dir']}#{node['apache']['apr_version']}.tar.gz" do
+  source "#{node['apache']['remote_apr_url']}#{node['apache']['apr_version']}.tar.gz"
+end
 
+bash "install apr" do
+  user node['apache']['install_user']
+  cwd  node['apache']['src_dir']
+  code <<-EOH
+	tar xzf #{node['apache']['apr_version']}.tar.gz
+	cd #{node['apache']['apr_version']}
+	./configure
+	make
+	make install
+  EOH
+end
+
+
+remote_file "#{node['apache']['src_dir']}#{node['apache']['apr-util_version']}.tar.gz" do
+  source "#{node['apache']['remote_apr_url']}#{node['apache']['apr-util_version']}.tar.gz"
+end
+
+bash "install apr util" do
+  user node['apache']['install_user']
+  cwd  node['apache']['src_dir']
+  code <<-EOH
+        tar xzf #{node['apache']['apr-util_version']}.tar.gz
+        cd #{node['apache']['apr-util_version']}
+        ./configure --with-apr=/usr/local/apr
+        make
+        make install
+  EOH
+end
+
+
+# PCREのインストール
+remote_file "#{node['apache']['src_dir']}#{node['apache']['pcre_version']}.tar.gz" do
+  source "#{node['apache']['pcre_remote_url']}#{node['apache']['pcre_version']}.tar.gz/"
+end
+
+bash "install pcre" do
+  user node['apache']['install_user']
+  cwd  node['apache']['src_dir']
+  code <<-EOH
+        tar xzf #{node['apache']['pcre_version']}.tar.gz
+        cd #{node['apache']['pcre_version']}
+        ./configure
+        make
+        make install
+  EOH
+end
+
+
+
+
+#ソースコードダウンロード
 remote_file "#{node['apache']['src_dir']}/#{node['apache']['version']}.tar.gz" do
   source "#{node['apache']['remote_base_url']}#{node['apache']['version']}.tar.gz"
 end
 
+#展開してインストール
 bash "install apache" do
   user     node['apache']['install_user']
   cwd      node['apache']['src_dir']
-  not_if   "ls #{node['apache']['dir']}"
+#  not_if   "ls #{node['apache']['dir']}"
   notifies :run, 'bash[start apache]', :immediately
   code   <<-EOH
     tar xzf #{node['apache']['version']}.tar.gz

@@ -2,6 +2,16 @@
 # Install Settings
 ###
 
+# ARP
+default['apache']['remote_apr_url'] = "http://ftp.jaist.ac.jp/pub/apache//apr/"
+default['apache']['apr_version'] = "apr-1.5.0"
+default['apache']['apr-util_version'] = "apr-util-1.5.3"
+
+# PCRE
+default['apache']['pcre_remote_url'] = "http://sourceforge.jp/frs/g_redir.php?m=jaist&f=/pcre/pcre/8.33/"
+default['apache']['pcre_version'] = "pcre-8.33"
+
+
 # Remote
 default['apache']['remote_base_url'] = "http://ftp.jaist.ac.jp/pub/apache/httpd/"
 
@@ -37,8 +47,6 @@ default['apache']['port_ssl']        = 443
 default['apache']['directory_index'] = "index.php, index.html"
 
 # User
-default['apache']['user']         = "www"
-default['apache']['group']        = "www"
 default['apache']['server_admin'] = "you@example.com"
 
 # Server
