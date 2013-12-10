@@ -145,7 +145,10 @@ LoadModule dir_module modules/mod_dir.so
 #LoadModule speling_module modules/mod_speling.so
 #LoadModule userdir_module modules/mod_userdir.so
 LoadModule alias_module modules/mod_alias.so
-#LoadModule rewrite_module modules/mod_rewrite.so
+
+<% node['apache']['load_mod'].each do |module_name| %>
+LoadModule <%= module_name %>_module modules/mod_<%= module_name %>.so
+<% end %>
 
 <IfModule unixd_module>
 #
@@ -501,3 +504,4 @@ SSLRandomSeed connect builtin
 #RequestHeader unset DNT env=bad_DNT
 #</IfModule>
 
+Include conf.d/*.conf

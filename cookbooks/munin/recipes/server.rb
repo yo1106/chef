@@ -118,6 +118,10 @@ template "#{node['munin']['basedir']}/munin.conf" do
   )
 end
 
+include_attribute "apache2"
+node['apache2']['include_custom_conf'].unshift("munin")
+include_recipe 'apache2::make_conf'
+
 case node['munin']['server_auth_method']
 when 'openid'
   if web_srv == :apache

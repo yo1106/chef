@@ -28,9 +28,16 @@ default['apache']['install_group'] = "root"
 default['apache']['run_user']  = "daemon"
 default['apache']['run_group'] = "daemon"
 
+# Load Modules
+default['apache']['load_mod'] = ["rewrite"]
 
 # Configure Options
 default['apache']['configure']  = "--prefix=#{default['apache']['dir']} --enable-ssl --with-ssl --enable-rewrite=shared --enable-headers=shared --enable-so --with-mpm=prefork"
+
+default['apache']['load_mod'].each do|mod|
+  default['apache']['configure'] += ' --enable-' + mod + '=shared'
+end
+
 
 # Include files
 default['apache']['include_files']  = [
@@ -65,6 +72,8 @@ default['apache']['default_modules'] = %w[
   status alias auth_basic authn_file authz_default authz_groupfile authz_host authz_user autoindex
   dir env mime negotiation setenvif
 ]
+
+default['apache']['include_custom_conf'] = []
 
 
 # Prefork

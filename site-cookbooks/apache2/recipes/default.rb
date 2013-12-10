@@ -13,6 +13,7 @@ remote_file "#{node['apache']['src_dir']}#{node['apache']['apr_version']}.tar.gz
 end
 
 bash "install apr" do
+  action :nothing
   not_if "ls /usr/local/apr/"
   user node['apache']['install_user']
   cwd  node['apache']['src_dir']
@@ -84,13 +85,14 @@ bash "install apache" do
   EOH
 end
 
-template "#{node['apache']['dir']}conf/httpd.conf" do
-  source   "httpd.conf.erb"
-  owner    node['apache']['install_user']
-  group    node['apache']['install_group']
-  mode     00644
-  notifies :run, 'bash[restart apache]', :immediately
-end
+include_recipe 'apache2::make_conf'
+#template "#{node['apache']['dir']}conf/httpd.conf" do
+#  source   "httpd.conf.erb"
+#  owner    node['apache']['install_user']
+#  group    node['apache']['install_group']
+#  mode     00644
+#  notifies :run, 'bash[restart apache]', :immediately
+#end
 
 for include_file in node['apache']['include_files']
   template "#{node['apache']['dir']}conf/extra/#{include_file}.conf" do
