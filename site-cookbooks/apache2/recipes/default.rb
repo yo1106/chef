@@ -13,6 +13,7 @@ remote_file "#{node['apache']['src_dir']}#{node['apache']['apr_version']}.tar.gz
 end
 
 bash "install apr" do
+  not_if "ls /usr/local/apr/"
   user node['apache']['install_user']
   cwd  node['apache']['src_dir']
   code <<-EOH
@@ -30,6 +31,7 @@ remote_file "#{node['apache']['src_dir']}#{node['apache']['apr-util_version']}.t
 end
 
 bash "install apr util" do
+  not_if "ls /usr/local/apr/lib/apr-util-1/"
   user node['apache']['install_user']
   cwd  node['apache']['src_dir']
   code <<-EOH
@@ -48,6 +50,7 @@ remote_file "#{node['apache']['src_dir']}#{node['apache']['pcre_version']}.tar.g
 end
 
 bash "install pcre" do
+  not_if "ls /usr/local/lib/libpcre.so"
   user node['apache']['install_user']
   cwd  node['apache']['src_dir']
   code <<-EOH
@@ -71,9 +74,8 @@ end
 bash "install apache" do
   user     node['apache']['install_user']
   cwd      node['apache']['src_dir']
-#  not_if   "ls #{node['apache']['dir']}"
-  notifies :run, 'bash[start apache]', :immediately
   code   <<-EOH
+    rm -rf #{node['apache']['version']}
     tar xzf #{node['apache']['version']}.tar.gz
     cd #{node['apache']['version']}
     ./configure #{node['apache']['configure']}
@@ -96,16 +98,24 @@ for include_file in node['apache']['include_files']
     owner    node['apache']['install_user']
     group    node['apache']['install_group']
     mode     00644
-    notifies :run, 'bash[restart apache]', :immediately
   end
 end
+
+template "/etc/init.d/httpd" do
+  source  "httpd.erb"
+  owner    node['apache']['install_user']
+  group    node['apache']['install_group']
+  mode     00744
+end
+
+
 
 bash "start apache" do
   action :nothing
   flags  '-ex'
   user   node['apache']['install_user']
   code   <<-EOH
-    #{node['apache']['dir']}bin/apachectl start
+    /etc/init.d/httpd start
   EOH
 end
 
@@ -114,6 +124,6 @@ bash "restart apache" do
   flags  '-ex'
   user   node['apache']['install_user']
   code   <<-EOH
-    #{node['apache']['dir']}bin/apachectl restart
+    /etc/init.d/httpd restart
   EOH
 end
